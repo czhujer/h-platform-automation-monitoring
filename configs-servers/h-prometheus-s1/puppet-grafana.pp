@@ -1,5 +1,5 @@
 class { 'grafana':
-  version => '5.3.4',
+  version => '6.4.4',
   cfg => {
     app_mode => 'production',
     server   => {

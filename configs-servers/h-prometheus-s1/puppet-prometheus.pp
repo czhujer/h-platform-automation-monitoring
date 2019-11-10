@@ -1,5 +1,5 @@
 class { 'prometheus::server':
-    version        => '2.7.2',
+    version        => '2.13.1',
     external_url   => "https://${facts['ipaddress']}/prometheus/",
     #extra_options  => "--web.route-prefix=/",
     storage_retention => '30d',
@@ -191,7 +191,7 @@ class { 'prometheus::server':
 }
 
 class { 'prometheus::alertmanager':
-  version => '0.16.2',
+  version => '0.19.0',
   route     => {
                  'group_by' => [ 'alertname', 'cluster', 'service' ],
                  'group_wait'=> '30s',
@@ -213,7 +213,7 @@ class { 'prometheus::alertmanager':
 }
 
 class { 'prometheus::node_exporter':
-  version => '0.15.2',
+  version => '0.18.1',
   collectors_disable => ['bcache','bonding', 'conntrack', 'mdadm' ],
 }
 
