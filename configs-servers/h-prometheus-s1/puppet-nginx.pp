@@ -177,3 +177,8 @@ nginx::resource::server { 'h-prometheus-s1':
   www_root    => "/var/www/html",
   location_cfg_append => { 'rewrite' => "^ https://${facts['ipaddress']}? permanent" },
 }
+
+# linux
+selinux::boolean{ 'httpd_can_network_connect':
+  ensure => 'on',
+}

@@ -137,6 +137,6 @@ mod 'puppet-prometheus', '7.1.0'
 
 mod 'puppet-grafana', '6.1.0'
 
-#mod 'puppet-selinux', '3.0.0'
+mod 'puppet-selinux', '3.0.0'
 
 #mod 'KyleAnderson-consul', '5.0.2'
