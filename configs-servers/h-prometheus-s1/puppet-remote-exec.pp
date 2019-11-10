@@ -1,11 +1,11 @@
 #
 
-ssh_authorized_key { 'hpa-hq1@jenkins':
-  user => 'hpa-remote-executor',
-  type => 'ssh-rsa',
-  options => [ 'no-port-forwarding', 'no-X11-forwarding', 'no-agent-forwarding', 'command="/usr/local/bin/ssh_command_wrapper"' ],
-  #key  => '',
-}
+# ssh_authorized_key { 'hpa-hq1@jenkins':
+#   user => 'hpa-remote-executor',
+#   type => 'ssh-rsa',
+#   options => [ 'no-port-forwarding', 'no-X11-forwarding', 'no-agent-forwarding', 'command="/usr/local/bin/ssh_command_wrapper"' ],
+#   #key  => '',
+# }
 
 $ssh_command_wrapper_content = '#!/bin/bash
 shopt -s extglob
