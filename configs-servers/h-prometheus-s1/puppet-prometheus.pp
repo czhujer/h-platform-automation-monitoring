@@ -205,7 +205,7 @@ class { 'prometheus::alertmanager':
                                      {
                      'to'   => 'pmajer@hsoftware.cz',
                      'from' => 'prometheus@hsoftware.cz',
-                     'smarthost' => 'mail.hsoftware.cz',
+                     'smarthost' => 'mail.hsoftware.cz:25',
                                      }
                                     ]
                  }
