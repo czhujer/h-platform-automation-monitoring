@@ -66,10 +66,15 @@ mod 'puppetlabs-stdlib', '5.2.0'
 #  :git => 'https://github.com/elastic/puppet-logstash-reporter',
 #  :tag => '0.1.0'
 
+# mod 'beats',
+#  :git => 'https://github.com/SugarFactory/puppet-beats',
+#  #:branch => 'master'
+#  :tag => '0.10.2'
+
 mod 'beats',
- :git => 'https://github.com/SugarFactory/puppet-beats',
- #:branch => 'master'
- :tag => '0.10.2'
+    :git => 'https://github.com/czhujer/puppet-beats',
+    #:branch => 'master'
+    :tag => '0.10.2'
 
 #mod 'openvpn',
 #  :git => 'https://github.com/luxflux/puppet-openvpn',
