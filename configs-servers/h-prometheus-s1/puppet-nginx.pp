@@ -72,14 +72,14 @@ nginx::resource::upstream { 'kibana-http':
   },
 }
 
-nginx::resource::upstream { 'consul-http':
-  members => {
-    '127.0.0.1:8500' => {
-      server => '127.0.0.1',
-      port   => 8500,
-    },
-  },
-}
+# nginx::resource::upstream { 'consul-http':
+#   members => {
+#     '127.0.0.1:8500' => {
+#       server => '127.0.0.1',
+#       port   => 8500,
+#     },
+#   },
+# }
 
 #default https server
 #
@@ -146,25 +146,25 @@ nginx::resource::location { 'http-prometheus':
   proxy           => 'http://prometheus-http/prometheus',
 }
 
-nginx::resource::location { 'http-consul-ui':
-  ensure          => present,
-  www_root        => undef,
-  ssl             => true,
-  ssl_only        => true,
-  server          => "${facts['ipaddress']}",
-  location        => '/ui/',
-  proxy           => 'http://consul-http/ui/',
-}
-
-nginx::resource::location { 'http-consul-v1':
-  ensure          => present,
-  www_root        => undef,
-  ssl             => true,
-  ssl_only        => true,
-  server          => "${facts['ipaddress']}",
-  location        => '/v1/',
-  proxy           => 'http://consul-http/v1/',
-}
+# nginx::resource::location { 'http-consul-ui':
+#   ensure          => present,
+#   www_root        => undef,
+#   ssl             => true,
+#   ssl_only        => true,
+#   server          => "${facts['ipaddress']}",
+#   location        => '/ui/',
+#   proxy           => 'http://consul-http/ui/',
+# }
+#
+# nginx::resource::location { 'http-consul-v1':
+#   ensure          => present,
+#   www_root        => undef,
+#   ssl             => true,
+#   ssl_only        => true,
+#   server          => "${facts['ipaddress']}",
+#   location        => '/v1/',
+#   proxy           => 'http://consul-http/v1/',
+# }
 
 # default http server
 #

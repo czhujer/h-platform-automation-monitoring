@@ -131,4 +131,4 @@ mod 'puppet-grafana', '5.0.0'
 
 mod 'puppet-selinux', '1.6.1'
 
-mod 'KyleAnderson-consul', '5.0.2'
+#mod 'KyleAnderson-consul', '5.0.2'
