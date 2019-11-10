@@ -31,6 +31,10 @@ Vagrant.configure('2') do |config|
   config.vm.provision :shell, path: 'scripts/bootstrap_ruby.sh', :privileged => true
   config.vm.provision :shell, path: 'scripts/bootstrap_puppet.sh', :privileged => true
 
+  # fix PKI
+  config.vm.provision :shell, :inline => "echo 'generate pki certs for webserver..'"
+  config.vm.provision :shell, path: 'scripts/pki-make-dummy-cert.sh', args: ["localhost"], :privileged => true
+
   #
   # run r10k and puppet apply
   #

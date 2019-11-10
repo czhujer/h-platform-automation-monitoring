@@ -4,7 +4,7 @@ yum clean all -q
 
 yum install which virt-what yum-utils epel-release deltarpm -y -q
 
-#for vagrant
+#for vagrant/facter
 yum install bind-utils net-tools -y -q
 
 yum update -y -q
