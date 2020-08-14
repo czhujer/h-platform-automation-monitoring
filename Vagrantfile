@@ -17,23 +17,24 @@ Vagrant.configure('2') do |config|
     v.memory = 1024
     v.cpus = 2
   end
+  dir = File.expand_path("..", __FILE__)
+  puts "DIR_monitoring: #{dir}"
 
   servers['vagrant'].each do |name, server_config|
     config.vm.define name do |host|
-      config.vm.synced_folder '.', '/vagrant', type: 'sshfs'
+      config.vm.synced_folder dir, '/vagrant', type: 'sshfs'
       host.vm.hostname = name
     end
-
   end
 
   # run ruby and puppet bootstrap
   config.vm.provision :shell, :inline => "echo 'starting bootstrap ruby and puppet...'"
-  config.vm.provision :shell, path: 'scripts/bootstrap_ruby.sh', :privileged => true
-  config.vm.provision :shell, path: 'scripts/bootstrap_puppet.sh', :privileged => true
+  config.vm.provision :shell, path: File.join(dir,'scripts/bootstrap_ruby.sh'), :privileged => true
+  config.vm.provision :shell, path: File.join(dir,'scripts/bootstrap_puppet.sh'), :privileged => true
 
   # fix PKI
   config.vm.provision :shell, :inline => "echo 'generate pki certs for webserver..'"
-  config.vm.provision :shell, path: 'scripts/pki-make-dummy-cert.sh', args: ["localhost"], :privileged => true
+  config.vm.provision :shell, path: File.join(dir,'scripts/pki-make-dummy-cert.sh'), args: ["localhost"], :privileged => true
 
   #
   # run r10k and puppet apply
