@@ -32,7 +32,7 @@ filebeats
 jaeger-agent in docker container
 
 ### docs
-https://www.jaegertracing.io/docs/1.18/architecture
-https://github.com/jaegertracing/jaeger-client-cpp
-https://github.com/opentracing-contrib/nginx-opentracing
-https://github.com/opentracing/opentracing-cpp/releases
+- https://www.jaegertracing.io/docs/1.18/architecture
+- https://github.com/jaegertracing/jaeger-client-cpp
+- https://github.com/opentracing-contrib/nginx-opentracing
+- https://github.com/opentracing/opentracing-cpp/releases
