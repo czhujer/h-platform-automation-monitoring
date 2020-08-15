@@ -155,6 +155,10 @@ nginx::resource::location { 'http-prometheus':
   server          => "${facts['ipaddress']}",
   location        => '/prometheus',
   proxy           => 'http://prometheus-http/prometheus',
+  location_cfg_append => {
+    'opentracing_operation_name' => '$uri',
+    'opentracing_propagate_context' => '',
+  },
 }
 
 # nginx::resource::location { 'http-consul-ui':
@@ -197,22 +201,3 @@ nginx::resource::server { 'h-prometheus-s1':
 selinux::boolean{ 'httpd_can_network_connect':
   ensure => 'on',
 }
-
-# tracing
-
-# archive { '/etc/nginx/modules/ngx_http_opentracing_module.so':
-#   ensure        => present,
-#   extract       => false,
-#   extract_path  => '/tmp',
-#   source        => '/vagrant/files/centos-7/nginx-1.18.0/ngx_http_opentracing_module.so',
-#   cleanup       => true,
-#   before        => Class['nginx'],
-# }
-#
-# file { '/etc/nginx/modules/ngx_http_opentracing_module.so':
-#   ensure  => 'file',
-#   mode    => '0755',
-#   seltype => 'lib_t',
-#   require => Archive['/etc/nginx/modules/ngx_http_opentracing_module.so'],
-#   before  => Class['nginx::service'],
-# }
