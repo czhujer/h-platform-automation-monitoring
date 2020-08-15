@@ -38,7 +38,7 @@ Vagrant.configure('2') do |config|
     #
     config_monitoring.vm.provision "r10k-msg",
                                     type: "shell",
-                                    :inline => "echo 'starting r10k install...'"
+                                    :inline => "echo \"##########################################################\n# starting r10k \n##########################################################\""
 
     config_monitoring.vm.provision "r10k-copy",
                                     type: "shell",
@@ -54,7 +54,7 @@ Vagrant.configure('2') do |config|
 
     config_monitoring.vm.provision "puppet-msg",
                                     type: "shell",
-                                    :inline => "echo 'starting puppet apply...'"
+                                    :inline => "echo \"##########################################################\n# starting puppet apply\n##########################################################\""
 
     config_monitoring.vm.provision "puppet-copy",
                                     type: "shell",
