@@ -8,5 +8,11 @@ class { 'grafana':
     users    => {
       allow_sign_up => false,
     },
+    # https://grafana.com/docs/grafana/latest/administration/configuration/#tracingjaeger
+    tracing => {
+      jaeger => {
+        address => "localhost:6831",
+      }
+    }
   },
 }

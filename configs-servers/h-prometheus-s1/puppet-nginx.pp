@@ -24,10 +24,17 @@ class { 'nginx':
   #
   spdy          => 'off',
   http2         => 'on',
-  # load vts module
-  #nginx_cfg_prepend => { 'load_module' => '/usr/lib64/nginx/modules/ngx_http_server_traffic_status_module.so'},
-  # enable vts module
-  #http_cfg_append => { 'server_traffic_status_zone' => ''},
+  nginx_cfg_prepend => {
+    # load modules
+    #'load_module' => '/usr/lib64/nginx/modules/ngx_http_server_traffic_status_module.so'},
+    #'load_module' => 'modules/ngx_http_opentracing_module.so',
+  },
+  http_cfg_append => {
+    # enable vts module
+    #'server_traffic_status_zone' => '',
+    #'opentracing_load_tracer' => '/usr/lib64/libjaegertracing.so /etc/jaeger-nginx-config.json',
+    #'opentracing'             => 'on',
+  },
 }
 
 firewall { '120 accept tcp to dports 80,443 / NGINX':
@@ -117,6 +124,8 @@ nginx::resource::server { "${facts['ipaddress']}":
       ],
       #because: better security
       #'add_header' => 'Strict-Transport-Security "max-age=31536000; includeSubDomains" always',
+      #'opentracing_operation_name' => '$uri',
+      #'opentracing_propagate_context' => '',
   },
 }
 
@@ -175,10 +184,33 @@ nginx::resource::server { 'h-prometheus-s1':
   #
   ssl         => false,
   www_root    => "/var/www/html",
-  location_cfg_append => { 'rewrite' => "^ https://${facts['ipaddress']}? permanent" },
+  location_cfg_append => {
+    'rewrite' => "^ https://${facts['ipaddress']}? permanent",
+   # 'opentracing_operation_name' => '$uri',
+   # 'opentracing_propagate_context' => '',
+  },
 }
 
 # selinux
 selinux::boolean{ 'httpd_can_network_connect':
   ensure => 'on',
 }
+
+# tracing
+
+# archive { '/etc/nginx/modules/ngx_http_opentracing_module.so':
+#   ensure        => present,
+#   extract       => false,
+#   extract_path  => '/tmp',
+#   source        => '/vagrant/files/centos-7/nginx-1.18.0/ngx_http_opentracing_module.so',
+#   cleanup       => true,
+#   before        => Class['nginx'],
+# }
+#
+# file { '/etc/nginx/modules/ngx_http_opentracing_module.so':
+#   ensure  => 'file',
+#   mode    => '0755',
+#   seltype => 'lib_t',
+#   require => Archive['/etc/nginx/modules/ngx_http_opentracing_module.so'],
+#   before  => Class['nginx::service'],
+# }
