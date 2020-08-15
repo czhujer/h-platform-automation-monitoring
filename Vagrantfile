@@ -36,15 +36,35 @@ Vagrant.configure('2') do |config|
     #
     # run r10k and puppet apply
     #
-    config_monitoring.vm.provision :shell, :inline => "echo 'starting r10k install .. and puppet apply...'"
+    config_monitoring.vm.provision "r10k-msg",
+                                    type: "shell",
+                                    :inline => "echo \"##########################################################\n# starting r10k \n##########################################################\""
 
-    config_monitoring.vm.provision :shell, :inline => "cd /vagrant && cp configs-servers/h-prometheus-s1/Puppetfile /etc/puppet/Puppetfile", :privileged => true
-    config_monitoring.vm.provision :shell, :inline => "source /opt/rh/rh-ruby26/enable; cd /etc/puppet && r10k puppetfile install --force --puppetfile /etc/puppet/Puppetfile", :privileged => true
+    config_monitoring.vm.provision "r10k-copy",
+                                    type: "shell",
+                                    :inline => "cd /vagrant && cp configs-servers/h-prometheus-s1/Puppetfile /etc/puppet/Puppetfile",
+                                    :privileged => true
+
+    config_monitoring.vm.provision "r10k-run",
+                                    type: "shell",
+                                    :inline => "source /opt/rh/rh-ruby26/enable; cd /etc/puppet && r10k puppetfile install --force --puppetfile /etc/puppet/Puppetfile",
+                                    :privileged => true
 
     #host_monitoring.vm.provision :shell, :inline => "source /opt/rh/rh-ruby26/enable; facter", :privileged => true
 
-    config_monitoring.vm.provision :shell, :inline => "cd /vagrant && cp configs-servers/h-prometheus-s1/*.pp /etc/puppet/manifests/", :privileged => true
-    config_monitoring.vm.provision :shell, :inline => "source /opt/rh/rh-ruby26/enable; puppet apply --color=false --detailed-exitcodes /etc/puppet/manifests; retval=$?; if [[ $retval -eq 2 ]]; then exit 0; else exit $retval; fi;", :privileged => true
+    config_monitoring.vm.provision "puppet-msg",
+                                    type: "shell",
+                                    :inline => "echo \"##########################################################\n# starting puppet apply\n##########################################################\""
+
+    config_monitoring.vm.provision "puppet-copy",
+                                    type: "shell",
+                                    :inline => "cd /vagrant && cp configs-servers/h-prometheus-s1/*.pp /etc/puppet/manifests/",
+                                    :privileged => true
+
+    config_monitoring.vm.provision "puppet-run",
+                                    type: "shell",
+                                    :inline => "source /opt/rh/rh-ruby26/enable; puppet apply --color=false --detailed-exitcodes /etc/puppet/manifests; retval=$?; if [[ $retval -eq 2 ]]; then exit 0; else exit $retval; fi;",
+                                    :privileged => true
 
   end
 end

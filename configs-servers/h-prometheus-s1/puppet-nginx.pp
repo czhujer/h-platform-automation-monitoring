@@ -3,8 +3,10 @@
 #
 class { 'nginx':
   package_source => 'nginx-stable',
-#  service_ensure => 'undef',
-#  service_restart => 'undef',
+  service_ensure => 'stopped',
+  service_restart => false,
+  service_enable => false,
+  #service_manage => false,
   confd_purge   => true,
   #server_purge   => true,
   server_purge  => true,
@@ -24,10 +26,18 @@ class { 'nginx':
   #
   spdy          => 'off',
   http2         => 'on',
-  # load vts module
-  #nginx_cfg_prepend => { 'load_module' => '/usr/lib64/nginx/modules/ngx_http_server_traffic_status_module.so'},
-  # enable vts module
-  #http_cfg_append => { 'server_traffic_status_zone' => ''},
+  nginx_cfg_prepend => {
+    # load modules
+    #'load_module' => '/usr/lib64/nginx/modules/ngx_http_server_traffic_status_module.so'},
+    'load_module' => '/usr/lib/nginx/modules/ngx_http_opentracing_module.so',
+  },
+  http_cfg_append => {
+    # enable vts module
+    #'server_traffic_status_zone' => '',
+    'opentracing_load_tracer' => '/usr/local/lib/libjaegertracing.so /etc/jaeger-nginx-config.json',
+    'opentracing'             => 'on',
+  },
+  notify  => Docker::Run['nginx-opentracing'],
 }
 
 firewall { '120 accept tcp to dports 80,443 / NGINX':
@@ -56,8 +66,8 @@ exec { "create custom dh params":
 
 nginx::resource::upstream { 'prometheus-http':
   members => {
-    '127.0.0.1:9090' => {
-      server => '127.0.0.1',
+    '172.17.0.1:9090' => {
+      server => '172.17.0.1',
       port   => 9090,
     },
   },
@@ -65,8 +75,8 @@ nginx::resource::upstream { 'prometheus-http':
 
 nginx::resource::upstream { 'grafana-http':
   members => {
-    '127.0.0.1:8080' => {
-      server => '127.0.0.1',
+    '172.17.0.1:8080' => {
+      server => '172.17.0.1',
       port   => 8080,
     },
   },
@@ -117,6 +127,8 @@ nginx::resource::server { "${facts['ipaddress']}":
       ],
       #because: better security
       #'add_header' => 'Strict-Transport-Security "max-age=31536000; includeSubDomains" always',
+      'opentracing_operation_name' => '$uri',
+      'opentracing_propagate_context' => '',
   },
 }
 
@@ -144,6 +156,10 @@ nginx::resource::location { 'http-prometheus':
   server          => "${facts['ipaddress']}",
   location        => '/prometheus',
   proxy           => 'http://prometheus-http/prometheus',
+  location_cfg_append => {
+    'opentracing_operation_name' => '$uri',
+    'opentracing_propagate_context' => '',
+  },
 }
 
 # nginx::resource::location { 'http-consul-ui':
@@ -175,10 +191,38 @@ nginx::resource::server { 'h-prometheus-s1':
   #
   ssl         => false,
   www_root    => "/var/www/html",
-  location_cfg_append => { 'rewrite' => "^ https://${facts['ipaddress']}? permanent" },
+  location_cfg_append => {
+    'rewrite' => "^ https://${facts['ipaddress']}? permanent",
+    'opentracing_operation_name' => '$uri',
+    'opentracing_propagate_context' => '',
+  },
 }
 
 # selinux
 selinux::boolean{ 'httpd_can_network_connect':
   ensure => 'on',
+}
+
+# tracing
+# /etc/jaeger-nginx-config.json
+
+$jaeger_nginx_config = '{
+  "service_name": "nginx-monitoring",
+  "sampler": {
+    "type": "const",
+    "param": 1
+  },
+  "reporter": {
+    "localAgentHostPort": "172.17.0.1:6831"
+  },
+}
+'
+
+file { '/etc/jaeger-nginx-config.json':
+  ensure  => 'file',
+  mode    => '0644',
+  content => $jaeger_nginx_config,
+  before  => [Class['nginx'],
+              Docker::Run['nginx-opentracing']],
+  notify  => Docker::Run['nginx-opentracing'],
 }

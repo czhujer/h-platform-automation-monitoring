@@ -1,3 +1,12 @@
+
+# folders for Prometheus FileSD
+file { ['/etc/prometheus_sd_file',
+        '/etc/prometheus_sd_file/ocb2b',
+        '/etc/prometheus_sd_file/dcops-https',
+        '/etc/prometheus_sd_file/ocb2c']:
+  ensure => 'directory',
+}
+
 class { 'prometheus::server':
     version        => '2.20.1',
     external_url   => "https://${facts['ipaddress']}/prometheus/",
@@ -227,4 +236,16 @@ class { 'prometheus::blackbox_exporter':
 }
 
 class { 'prometheus::snmp_exporter':
+}
+
+# tracing
+$systemd_prometheus_tracing = '[Service]
+Environment="JAEGER_AGENT_HOST=172.17.0.1"
+Environment="JAEGER_DISABLED=false"
+'
+
+systemd::dropin_file { 'prometheus-tracing.conf':
+  unit   => 'prometheus.service',
+  content => $systemd_prometheus_tracing,
+  notify => Class['prometheus'],
 }
