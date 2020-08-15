@@ -202,3 +202,27 @@ nginx::resource::server { 'h-prometheus-s1':
 selinux::boolean{ 'httpd_can_network_connect':
   ensure => 'on',
 }
+
+# tracing
+# /etc/jaeger-nginx-config.json
+
+$jaeger_nginx_config = '{
+  "service_name": "nginx-monitoring",
+  "sampler": {
+    "type": "const",
+    "param": 1
+  },
+  "reporter": {
+    "localAgentHostPort": "172.17.0.1:6831"
+  },
+}
+'
+
+file { '/etc/jaeger-nginx-config.json':
+  ensure  => 'file',
+  mode    => '0644',
+  content => $jaeger_nginx_config,
+  before  => [Class['nginx'],
+              Docker::Run['nginx-opentracing']],
+  notify  => Docker::Run['nginx-opentracing'],
+}
