@@ -63,7 +63,7 @@ nginx::resource::upstream { 'prometheus-http':
   },
 }
 
-nginx::resource::upstream { 'kibana-http':
+nginx::resource::upstream { 'grafana-http':
   members => {
     '127.0.0.1:8080' => {
       server => '127.0.0.1',
@@ -86,7 +86,7 @@ nginx::resource::upstream { 'kibana-http':
 nginx::resource::server { "${facts['ipaddress']}":
   listen_port  => 443,
   #
-  proxy       => 'http://kibana-http',
+  proxy       => 'http://grafana-http',
   #
   ipv6_enable => true,
   ipv6_listen_options => '',
