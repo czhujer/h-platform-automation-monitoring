@@ -237,3 +237,15 @@ class { 'prometheus::blackbox_exporter':
 
 class { 'prometheus::snmp_exporter':
 }
+
+# tracing
+$systemd_prometheus_tracing = '[Service]
+Environment="JAEGER_AGENT_HOST=172.17.0.1"
+Environment="JAEGER_DISABLED=false"
+'
+
+systemd::dropin_file { 'prometheus-tracing.conf':
+  unit   => 'prometheus.service',
+  content => $systemd_prometheus_tracing,
+  notify => Class['prometheus'],
+}
