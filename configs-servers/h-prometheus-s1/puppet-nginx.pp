@@ -4,7 +4,7 @@
 class { 'nginx':
   package_source => 'nginx-stable',
   service_ensure => 'stopped',
-  service_restart => 'undef',
+  service_restart => false,
   service_enable => false,
   #service_manage => false,
   confd_purge   => true,
@@ -37,6 +37,7 @@ class { 'nginx':
     'opentracing_load_tracer' => '/usr/local/lib/libjaegertracing.so /etc/jaeger-nginx-config.json',
     'opentracing'             => 'on',
   },
+  notify  => Docker::Run['nginx-opentracing'],
 }
 
 firewall { '120 accept tcp to dports 80,443 / NGINX':
