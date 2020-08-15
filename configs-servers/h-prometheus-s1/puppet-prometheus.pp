@@ -1,6 +1,9 @@
 
 # folders for Prometheus FileSD
-file { ['/etc/prometheus_sd_file/ocb2b', '/etc/prometheus_sd_file/dcops-https', '/etc/prometheus_sd_file/ocb2c']:
+file { ['/etc/prometheus_sd_file',
+        '/etc/prometheus_sd_file/ocb2b',
+        '/etc/prometheus_sd_file/dcops-https',
+        '/etc/prometheus_sd_file/ocb2c']:
   ensure => 'directory',
 }
 
