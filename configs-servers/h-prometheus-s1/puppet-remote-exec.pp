@@ -1,11 +1,17 @@
 #
+user { 'hpa-remote-executor':
+  ensure     => 'present',
+  comment    => 'user for remote exec',
+  managehome => true,
+}
 
-# ssh_authorized_key { 'hpa-hq1@jenkins':
-#   user => 'hpa-remote-executor',
-#   type => 'ssh-rsa',
-#   options => [ 'no-port-forwarding', 'no-X11-forwarding', 'no-agent-forwarding', 'command="/usr/local/bin/ssh_command_wrapper"' ],
-#   #key  => '',
-# }
+ssh_authorized_key { 'cc-server@hpa-hq1':
+  user => 'hpa-remote-executor',
+  type => 'ssh-rsa',
+  options => [ 'no-port-forwarding', 'no-X11-forwarding', 'no-agent-forwarding', 'command="/usr/local/bin/ssh_command_wrapper"' ],
+  key  => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQC9FpCgANLCOdTIep9sUBkwmuJ7l42zd+8PW5iKqROYt4oRfv6FFrztybUe+lBQh0hGjRi43J72DUCP6yCdODOSVZFCeLPlRkZrZjWDbLoGhyn0Xj7/Zz8GqV0o01+LxYKfGvR6wRxRp8Iz3+xP0PoOGkj4359BLxX9qYB7BNga23jgHb2iak7HrdZma738IRa7v3enO8hD8RYYvBnCPEl4iuH/q+8jtCEWStYbiFVKePNaki/l1DLxzu9CEY+XlswiS17bQxtpcrsP3yn9x4LKTkdqFYA4wkDuJVYZfLRKSFDWKhPJl7udSB6nskmf5WW056y9b9v2r/U525Sw5BNICZmwkXwR/shf9MsE+xYyh1zTb+50YPxXDW+lRVeiAGnCixFxndiFZLppQ/sgGWZcohNir3F/m9Drakei7AbJUn6k1nhBG4TzfQrTzXWu4EwnKupQvi80+AqzQ5WkUXSeqwYyR/I5M+Biv25NFUkvTanfXPNz5YMufECpCtFlg8n36Y7KBUy4dhQ3Et7eyrOYOQbHDnnFp6Zm5ECP7LEILikgqAz2BnPQE5qIYb+X45j572tTTETmBI8OT5tn/zh9pikNdHzGoZsvBu4g/zgfjtud+eJxLR4jw+zbVqtQ65W/11ZEpSLQm9MogCalkjl0e8jaUriPkTRmWrgM93TvaQ==',
+  require => User['hpa-remote-executor'],
+}
 
 $ssh_command_wrapper_content = '#!/bin/bash
 shopt -s extglob
