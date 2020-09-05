@@ -247,5 +247,5 @@ Environment="JAEGER_DISABLED=false"
 systemd::dropin_file { 'prometheus-tracing.conf':
   unit   => 'prometheus.service',
   content => $systemd_prometheus_tracing,
-  notify => Class['prometheus'],
+  notify => Class['prometheus::service_reload'],
 }
